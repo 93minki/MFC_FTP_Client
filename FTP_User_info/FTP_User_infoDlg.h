@@ -3,6 +3,8 @@
 //
 
 #pragma once
+#include "afxcmn.h"
+#include "afxwin.h"
 
 
 // CFTP_User_infoDlg 대화 상자
@@ -31,4 +33,16 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnBnClickedButton1();
+	CString m_Server_IP;
+	CString m_User_ID;
+	CString m_User_Password;
+	CIPAddressCtrl m_ctrl_Server_IP;
+	CEdit m_ctrl_User_ID;
+	CEdit m_ctrl_User_PW;
+	afx_msg void OnBnClickedButton2();
+	CString GetServerIP();
+	CString GetUserID();
+	CString GetUserPW();
 };

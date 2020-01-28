@@ -6,6 +6,8 @@
 #include "FTP_User_info.h"
 #include "FTP_User_infoDlg.h"
 #include "afxdialogex.h"
+#include "FTP_Client.h"
+#include <WinInet.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -51,6 +53,9 @@ END_MESSAGE_MAP()
 
 CFTP_User_infoDlg::CFTP_User_infoDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_FTP_USER_INFO_DIALOG, pParent)
+	, m_Server_IP(_T(""))
+	, m_User_ID(_T(""))
+	, m_User_Password(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -58,12 +63,17 @@ CFTP_User_infoDlg::CFTP_User_infoDlg(CWnd* pParent /*=NULL*/)
 void CFTP_User_infoDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_IPADDRESS1, m_ctrl_Server_IP);
+	DDX_Control(pDX, IDC_USER_ID, m_ctrl_User_ID);
+	DDX_Control(pDX, IDC_USER_PW, m_ctrl_User_PW);
 }
 
 BEGIN_MESSAGE_MAP(CFTP_User_infoDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_BUTTON1, &CFTP_User_infoDlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON2, &CFTP_User_infoDlg::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -152,3 +162,48 @@ HCURSOR CFTP_User_infoDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+
+void CFTP_User_infoDlg::OnBnClickedButton1()						// Connect Button
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	BYTE ipFirst, ipSecond, ipThird, ipForth;
+	m_ctrl_Server_IP.GetAddress(ipFirst, ipSecond, ipThird, ipForth);
+
+	/* Connection 화면에서 입력한 IP, ID, PW 정보 */
+	m_Server_IP.Format(_T("%d.%d.%d.%d"), ipFirst, ipSecond, ipThird, ipForth);
+	GetDlgItemText(IDC_USER_ID, m_User_ID);
+	GetDlgItemText(IDC_USER_PW, m_User_Password);
+	/* 각 m_Server_IP, m_User_ID, m_User_PW 에 저장 */
+
+	/* FTP_Client Dialog 띄우기*/
+	CFTP_Client ClientDlg;
+	ClientDlg.DoModal();
+
+	
+}
+
+
+void CFTP_User_infoDlg::OnBnClickedButton2()						// Cancel Button
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	::PostQuitMessage(WM_QUIT);
+}
+
+
+CString CFTP_User_infoDlg::GetServerIP()
+{
+	return m_Server_IP;
+}
+
+
+CString CFTP_User_infoDlg::GetUserID()
+{
+	return m_User_ID;
+}
+
+
+CString CFTP_User_infoDlg::GetUserPW()
+{
+	return m_User_Password;
+}
